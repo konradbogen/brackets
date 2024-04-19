@@ -1,7 +1,6 @@
 DROP TABLE IF EXISTS Entries;
 
 CREATE TABLE Entries (
-    id INTEGER UNIQUE PRIMARY KEY,
     bracket VARCHAR NOT NULL,
     content VARCHAR
 );
