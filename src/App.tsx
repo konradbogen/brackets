@@ -112,7 +112,7 @@ class App extends React.Component<Props, State> {
     let expanded = from;
     currentMap.forEach((_value, key) => {
       let bracketKey = "[" + key + "]";
-      let content = _value;
+      let content = "[" + _value + "]";
       expanded = expanded.replaceAll(bracketKey, content);
     });
     console.log("exp");
