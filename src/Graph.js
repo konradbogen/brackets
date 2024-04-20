@@ -9,8 +9,8 @@ const Graph = () => {
     nodeGroup: (d) => d.group,
     nodeTitle: (d) => `${d.id}\n${d.group}`,
     linkStrokeWidth: (l) => Math.sqrt(l.value),
-    width: 600,
-    height: 600,
+    width: window.innerWidth,
+    height: window.innerHeight,
   });
 
   const svgRef = useRef(null);
@@ -41,7 +41,7 @@ function ForceGraph(
     nodeGroups, // an array of ordinal values representing the node groups
     nodeTitle, // given d in nodes, a title string
     nodeFill = "currentColor", // node stroke fill (if not using a group color encoding)
-    nodeStroke = "#fff", // node stroke color
+    nodeStroke = "transparent", // node stroke color
     nodeStrokeWidth = 1.5, // node stroke width, in pixels
     nodeStrokeOpacity = 1, // node stroke opacity
     nodeRadius = 5, // node radius, in pixels
@@ -52,7 +52,7 @@ function ForceGraph(
     linkStrokeOpacity = 0.6, // link stroke opacity
     linkStrokeWidth = 1.5, // given d in links, returns a stroke width in pixels
     linkStrokeLinecap = "round", // link stroke linecap
-    linkStrength,
+    linkStrength = 0.5,
     colors = d3.schemeTableau10, // an array of color strings, for the node groups
     width = 640, // outer width, in pixels
     height = 400, // outer height, in pixels
@@ -87,7 +87,7 @@ function ForceGraph(
   const forceNode = d3.forceManyBody();
   const forceLink = d3.forceLink(links).id(({ index: i }) => N[i]);
   if (nodeStrength !== undefined) forceNode.strength(nodeStrength);
-  if (linkStrength !== undefined) forceLink.strength(linkStrength);
+  if (linkStrength !== undefined) forceLink.strength(linkStrength / 10);
 
   const simulation = d3
     .forceSimulation(nodes)
@@ -128,6 +128,27 @@ function ForceGraph(
     .attr("r", nodeRadius)
     .call(drag(simulation));
 
+  const text = svg
+    .append("g")
+    .selectAll("text")
+    .data(nodes)
+    .join("text")
+    .text((d) => "[" + d.id + "]") // Set text content to node id (or any property you want to display)
+    .attr("fill", "white") // Set text color to white
+    .attr("font-size", "10px") // Set font size
+    .attr("font-weight", "bold") // Set font weight
+    .attr("text-anchor", "middle") // Set text anchor to middle for center alignment
+    .attr("dy", 4) // Adjust vertical position relative to circle (optional)
+    .call(drag(simulation));
+
+  // Position text labels relative to nodes
+  text
+    .attr("x", (d) => d.x) // Position text along the x-axis based on node's x-coordinate
+    .attr("y", (d) => d.y); // Position text along the y-axis based on node's y-coordinate
+
+  // Add node titles (tooltips)
+  node.append("title").text((d) => "[" + d.id + "]");
+
   if (W) link.attr("stroke-width", ({ index: i }) => W[i]);
   if (L) link.attr("stroke", ({ index: i }) => L[i]);
   if (G) node.attr("fill", ({ index: i }) => color(G[i]));
@@ -149,6 +170,7 @@ function ForceGraph(
       .attr("y2", (d) => d.target.y);
 
     node.attr("cx", (d) => d.x).attr("cy", (d) => d.y);
+    text.attr("x", (d) => d.x).attr("y", (d) => d.y + 10);
   }
 
   function drag(simulation) {
