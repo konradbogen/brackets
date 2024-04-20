@@ -3,6 +3,7 @@ import React from "react";
 import LevelList from "./LevelList";
 import TabKeyListener from "./TabKeyListener";
 import Graph from "./Graph";
+import * as d3 from "d3";
 
 type State = { area: string; mode: number };
 type Props = {};
@@ -42,8 +43,8 @@ class App extends React.Component<Props, State> {
       case 1:
         return (
           <div>
-            <TabKeyListener onTabPress={this.handleTabPress.bind(this)} />
             <Graph />
+            <TabKeyListener onTabPress={this.handleTabPress.bind(this)} />
           </div>
         );
     }
