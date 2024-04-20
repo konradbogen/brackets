@@ -1,8 +1,10 @@
 import "./App.css";
 import React from "react";
 import LevelList from "./LevelList";
+import TabKeyListener from "./TabKeyListener";
+import Graph from "./Graph";
 
-type State = { area: string };
+type State = { area: string; mode: number };
 type Props = {};
 
 class App extends React.Component<Props, State> {
@@ -11,19 +13,44 @@ class App extends React.Component<Props, State> {
 
   constructor(props: Props) {
     super(props);
-    this.state = { area: "" };
+    this.state = { area: "", mode: 1 };
     this.levels = new LevelList("");
     this.map = new Map<string, string>();
     this.fetchDB();
   }
 
+  handleTabPress() {
+    if (this.state.mode === 1) {
+      this.setState({ mode: 0 });
+    } else {
+      this.setState({ mode: 1 });
+    }
+  }
+
+  component() {
+    switch (this.state.mode) {
+      case 0:
+        return (
+          <div>
+            <TabKeyListener onTabPress={this.handleTabPress.bind(this)} />
+            <textarea
+              value={this.state.area}
+              onChange={(e) => this.handleChange(e)}
+            />
+          </div>
+        );
+      case 1:
+        return (
+          <div>
+            <TabKeyListener onTabPress={this.handleTabPress.bind(this)} />
+            <Graph />
+          </div>
+        );
+    }
+  }
+
   render() {
-    return (
-      <textarea
-        value={this.state.area}
-        onChange={(e) => this.handleChange(e)}
-      />
-    );
+    return this.component();
   }
 
   handleChange(event: React.ChangeEvent<HTMLTextAreaElement>) {
@@ -42,6 +69,7 @@ class App extends React.Component<Props, State> {
         fileName,
         this.levels.head.value.replace(">save_" + fileName, "")
       );
+      this.list();
     } else if (newArea.includes(">exp ")) {
       newArea = newArea.replace(">exp ", "");
       this.levels.tail.value = newArea;
@@ -58,10 +86,10 @@ class App extends React.Component<Props, State> {
   load(filename: string) {
     let content = this.map.get(filename);
     if (content !== undefined) {
-      console.log("LOOOADD");
+      console.log("Sucessful Load");
       this.levels = new LevelList(content);
     } else {
-      console.log("NOO LOOOADD");
+      console.log("Load failed");
     }
   }
 
@@ -74,7 +102,7 @@ class App extends React.Component<Props, State> {
     );
     xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
     xhr.onload = () => {
-      console.log("set");
+      console.log(xhr.responseText);
       this.fetchDB();
     };
     xhr.send("bracket=" + bracket + "&content=" + content);
@@ -102,6 +130,16 @@ class App extends React.Component<Props, State> {
     }
   }
 
+  list() {
+    let text = "";
+    this.map.forEach((_value, key) => {
+      if (key != "master") {
+        text += "[" + key + "]\n";
+      }
+    });
+    this.setEntry("master", text);
+  }
+
   expand(from: string) {
     let currentMap = new Map();
     this.map.forEach((_value, key) => {
@@ -112,7 +150,7 @@ class App extends React.Component<Props, State> {
     let expanded = from;
     currentMap.forEach((_value, key) => {
       let bracketKey = "[" + key + "]";
-      let content = "[" + _value + "]";
+      let content = _value;
       expanded = expanded.replaceAll(bracketKey, content);
     });
     console.log("exp");
