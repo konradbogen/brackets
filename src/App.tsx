@@ -3,9 +3,9 @@ import React from "react";
 import LevelList from "./LevelList";
 import TabKeyListener from "./TabKeyListener";
 import Graph from "./Graph";
-import * as d3 from "d3";
+import { send } from "./Edge";
 
-type State = { area: string; mode: number };
+type State = { area: string; mode: boolean };
 type Props = {};
 
 class App extends React.Component<Props, State> {
@@ -14,39 +14,38 @@ class App extends React.Component<Props, State> {
 
   constructor(props: Props) {
     super(props);
-    this.state = { area: "", mode: 1 };
+    this.state = { area: "", mode: true };
     this.levels = new LevelList("");
     this.map = new Map<string, string>();
     this.fetchDB();
   }
 
   handleTabPress() {
-    if (this.state.mode === 1) {
-      this.setState({ mode: 0 });
+    if (this.state.mode === true) {
+      this.setState({ mode: false });
     } else {
-      this.setState({ mode: 1 });
+      this.setState({ mode: true });
     }
   }
 
   component() {
-    switch (this.state.mode) {
-      case 0:
-        return (
-          <div>
-            <TabKeyListener onTabPress={this.handleTabPress.bind(this)} />
-            <textarea
-              value={this.state.area}
-              onChange={(e) => this.handleChange(e)}
-            />
-          </div>
-        );
-      case 1:
-        return (
-          <div>
-            <Graph />
-            <TabKeyListener onTabPress={this.handleTabPress.bind(this)} />
-          </div>
-        );
+    if (this.state.mode) {
+      return (
+        <div>
+          <TabKeyListener onTabPress={this.handleTabPress.bind(this)} />
+          <textarea
+            value={this.state.area}
+            onChange={(e) => this.handleChange(e)}
+          />
+        </div>
+      );
+    } else {
+      return (
+        <div>
+          <Graph />
+          <TabKeyListener onTabPress={this.handleTabPress.bind(this)} />
+        </div>
+      );
     }
   }
 
@@ -56,18 +55,18 @@ class App extends React.Component<Props, State> {
 
   handleChange(event: React.ChangeEvent<HTMLTextAreaElement>) {
     let newArea = event.target.value;
-    let loadMatch = newArea.match(">.* ");
-    let saveMatch = newArea.match(">.* ");
+    let loadMatch = newArea.match(">load_.* ");
+    let saveMatch = newArea.match(">save_.* ");
     if (newArea.includes("- ")) {
       newArea = newArea.replace("- ", "");
       this.levels.delete();
     } else if (loadMatch) {
-      let fileName = loadMatch[0].substring(1).replace(" ", "");
+      let fileName = loadMatch[0].split("_")[1].replace(" ", "");
       console.log(fileName);
       this.load(fileName);
     } else if (saveMatch) {
-      let fileName = saveMatch[0].substring(1).replace(" ", "");
-      this.setEntry(
+      let fileName = saveMatch[0].split("_")[1].replace(" ", "");
+      this.save(
         fileName,
         this.levels.head.value.replace(">save_" + fileName, "")
       );
@@ -95,7 +94,7 @@ class App extends React.Component<Props, State> {
     }
   }
 
-  async setEntry(bracket: string, content: string) {
+  async save(bracket: string, content: string) {
     var xhr = new XMLHttpRequest();
     xhr.open(
       "POST",
@@ -108,6 +107,7 @@ class App extends React.Component<Props, State> {
       this.fetchDB();
     };
     xhr.send("bracket=" + bracket + "&content=" + content);
+    send(this.map);
   }
 
   async fetchDB() {
@@ -139,7 +139,7 @@ class App extends React.Component<Props, State> {
         text += "[" + key + "]\n";
       }
     });
-    this.setEntry("master", text);
+    this.save("master", text);
   }
 
   expand(from: string) {

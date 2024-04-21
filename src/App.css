@@ -16,9 +16,10 @@ textarea {
   width: 100%;
   height: 100vh;
   border: none;
+  color: white;
   overflow: auto;
   outline: none;
-  background-color: #f7f4ea;
+  background-color: #282c34;
   -webkit-box-shadow: none;
   -moz-box-shadow: none;
   box-shadow: none;
@@ -73,10 +74,30 @@ text {
 
 body {
   overflow: hidden;
+  background-color: #282c34;
 }
 
 svg {
-  background: rgb(33, 33, 33);
+  background: #282c34;
   width: 100%;
   height: 100%;
+}
+
+/* Example CSS for fade transition */
+.fade-enter {
+  opacity: 0;
+}
+
+.fade-enter-active {
+  opacity: 1;
+  transition: opacity 0.5s ease-in-out;
+}
+
+.fade-exit {
+  opacity: 1;
+}
+
+.fade-exit-active {
+  opacity: 0;
+  transition: opacity 0.5s ease-in-out;
 }

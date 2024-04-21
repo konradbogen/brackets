@@ -1,31 +1,44 @@
 import * as d3 from "d3";
 import miserables from "./miserables.json";
-
+import { fetchGraph } from "./Edge";
 import React, { useRef, useEffect } from "react";
 
-const Graph = () => {
-  let chart = ForceGraph(miserables, {
-    nodeId: (d) => d.id,
-    nodeGroup: (d) => d.group,
-    nodeTitle: (d) => `${d.id}\n${d.group}`,
-    linkStrokeWidth: (l) => Math.sqrt(l.value),
-    width: window.innerWidth,
-    height: window.innerHeight,
-  });
+let graphData = await fetchGraph();
 
+console.log("GRAPH DATA");
+console.log(graphData);
+
+console.log("MISERABLES");
+console.log(miserables);
+
+let dataGraph = ForceGraph(graphData, {
+  nodeId: (d) => d.id,
+  nodeGroup: (d) => d.group,
+  nodeTitle: (d) => `${d.id}\n${d.group}`,
+  linkStrokeWidth: (l) => Math.sqrt(l.value),
+  width: window.innerWidth,
+  height: window.innerHeight,
+});
+
+function Graph() {
+  const chartRef = useRef(null); // Use ref to store the chart instance
   const svgRef = useRef(null);
 
   useEffect(() => {
+    if (!chartRef.current) {
+      chartRef.current = dataGraph;
+    }
+
     if (svgRef.current) {
       // Append the SVG object to the container
-      svgRef.current.appendChild(chart);
+      svgRef.current.appendChild(chartRef.current);
     }
   }, []);
 
   return (
     <div ref={svgRef}>{/* This empty div will contain the rendered SVG */}</div>
   );
-};
+}
 
 // Copyright 2021-2024 Observable, Inc.
 // Released under the ISC license.
@@ -52,7 +65,7 @@ function ForceGraph(
     linkStrokeOpacity = 0.6, // link stroke opacity
     linkStrokeWidth = 1.5, // given d in links, returns a stroke width in pixels
     linkStrokeLinecap = "round", // link stroke linecap
-    linkStrength = 0.5,
+    linkStrength = 0.3,
     colors = d3.schemeTableau10, // an array of color strings, for the node groups
     width = 640, // outer width, in pixels
     height = 400, // outer height, in pixels
