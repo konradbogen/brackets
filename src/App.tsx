@@ -56,23 +56,24 @@ class App extends React.Component<Props, State> {
 
   handleChange(event: React.ChangeEvent<HTMLTextAreaElement>) {
     let newArea = event.target.value;
-    let loadMatch = newArea.match(">load_.* ");
-    let saveMatch = newArea.match(">save_.* ");
-    if (newArea.includes(">close ")) {
+    let loadMatch = newArea.match(">.* ");
+    let saveMatch = newArea.match(">.* ");
+    if (newArea.includes("- ")) {
+      newArea = newArea.replace("- ", "");
       this.levels.delete();
     } else if (loadMatch) {
-      let fileName = loadMatch[0].split("_")[1].replace(" ", "");
+      let fileName = loadMatch[0].substring(1).replace(" ", "");
       console.log(fileName);
       this.load(fileName);
     } else if (saveMatch) {
-      let fileName = saveMatch[0].split("_")[1].replace(" ", "");
+      let fileName = saveMatch[0].substring(1).replace(" ", "");
       this.setEntry(
         fileName,
         this.levels.head.value.replace(">save_" + fileName, "")
       );
       this.list();
-    } else if (newArea.includes(">exp ")) {
-      newArea = newArea.replace(">exp ", "");
+    } else if (newArea.includes("+ ")) {
+      newArea = newArea.replace("+ ", "");
       this.levels.tail.value = newArea;
       newArea = this.expand(newArea);
       this.levels.append(newArea);
