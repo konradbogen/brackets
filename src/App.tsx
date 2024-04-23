@@ -3,9 +3,9 @@ import React from "react";
 import LevelList from "./LevelList";
 import TabKeyListener from "./TabKeyListener";
 import Graph from "./Graph";
-import { send } from "./Edge";
+import { send, fetchGraph } from "./Edge";
 
-type State = { area: string; mode: boolean };
+type State = { area: string; mode: boolean; graphData: any };
 type Props = {};
 
 class App extends React.Component<Props, State> {
@@ -14,15 +14,16 @@ class App extends React.Component<Props, State> {
 
   constructor(props: Props) {
     super(props);
-    this.state = { area: "", mode: true };
+    this.state = { area: "", mode: true, graphData: null };
     this.levels = new LevelList("");
     this.map = new Map<string, string>();
     this.fetchDB();
   }
 
-  handleTabPress() {
+  async handleTabPress() {
     if (this.state.mode === true) {
-      this.setState({ mode: false });
+      let gd = await fetchGraph();
+      this.setState({ mode: false, graphData: gd });
     } else {
       this.setState({ mode: true });
     }
@@ -42,7 +43,7 @@ class App extends React.Component<Props, State> {
     } else {
       return (
         <div>
-          <Graph />
+          <Graph graphData={this.state.graphData} />
           <TabKeyListener onTabPress={this.handleTabPress.bind(this)} />
         </div>
       );
