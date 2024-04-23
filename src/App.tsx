@@ -23,8 +23,10 @@ class App extends React.Component<Props, State> {
   async handleTabPress() {
     if (this.state.mode === true) {
       let gd = await fetchGraph();
+      document.body.style.backgroundColor = "#282c34"; // Set background color
       this.setState({ mode: false, graphData: gd });
     } else {
+      document.body.style.backgroundColor = "rgb(60, 66, 77)";
       this.setState({ mode: true });
     }
   }
@@ -71,7 +73,6 @@ class App extends React.Component<Props, State> {
         fileName,
         this.levels.head.value.replace(">save_" + fileName, "")
       );
-      this.list();
     } else if (newArea.includes("+ ")) {
       newArea = newArea.replace("+ ", "");
       this.levels.tail.value = newArea;
@@ -106,9 +107,9 @@ class App extends React.Component<Props, State> {
     xhr.onload = () => {
       console.log(xhr.responseText);
       this.fetchDB();
+      send(this.map);
     };
     xhr.send("bracket=" + bracket + "&content=" + content);
-    send(this.map);
   }
 
   async fetchDB() {

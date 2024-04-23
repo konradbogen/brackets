@@ -6,3 +6,4 @@
     echo $query;
     $db = new SQLite3("data.db");
     $db->exec($query);
+    $db->close();

@@ -19,7 +19,7 @@ textarea {
   color: white;
   overflow: auto;
   outline: none;
-  background-color: #282c34;
+  background-color: transparent;
   -webkit-box-shadow: none;
   -moz-box-shadow: none;
   box-shadow: none;
@@ -74,11 +74,12 @@ text {
 
 body {
   overflow: hidden;
-  background-color: #282c34;
+  background-color: rgb(60, 66, 77);
+  transition: background-color 0.3s ease; /* Smooth transition for background color */
 }
 
 svg {
-  background: #282c34;
+  background: transparent;
   width: 100%;
   height: 100%;
 }

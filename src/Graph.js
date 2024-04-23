@@ -57,7 +57,7 @@ function createOrUpdateForceGraph(svg, { nodes, links }) {
     linkStrokeLinecap: "round",
 
     // Link strength (for force simulation)
-    linkStrength: 0.3,
+    linkStrength: 0.1,
 
     // Array of color strings for the node groups
     colors: d3.schemeTableau10,

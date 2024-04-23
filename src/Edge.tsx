@@ -49,13 +49,13 @@ function makeNodes(data: any) {
 
 async function fetchGraph() {
   let _edges = await fetchEdges();
-  let _nodes = nodesFromEdges(_edges);
+  let _nodes = await nodes();
+  _nodes = nodesFromEdges(_edges, _nodes);
   return { nodes: _nodes, links: _edges };
 }
 
-function nodesFromEdges(edges: any) {
+function nodesFromEdges(edges: any, nodes: any) {
   let knownNodes: Array<String> = [];
-  let nodes: Array<Object> = [];
   edges.forEach((edge: any) => {
     if (knownNodes.includes(edge.source) === false) {
       knownNodes.push(edge.source);
