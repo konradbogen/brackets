@@ -60,8 +60,8 @@ class App extends React.Component<Props, State> {
     let newArea = event.target.value;
     let loadMatch = newArea.match(">load_.* ");
     let saveMatch = newArea.match(">save_.* ");
-    if (newArea.includes("- ")) {
-      newArea = newArea.replace("- ", "");
+    if (newArea.includes(">close ")) {
+      newArea = newArea.replace(">close ", "");
       this.levels.delete();
     } else if (loadMatch) {
       let fileName = loadMatch[0].split("_")[1].replace(" ", "");
@@ -73,8 +73,10 @@ class App extends React.Component<Props, State> {
         fileName,
         this.levels.head.value.replace(">save_" + fileName, "")
       );
-    } else if (newArea.includes("+ ")) {
-      newArea = newArea.replace("+ ", "");
+      newArea = newArea.replace(">save_" + fileName + " ", "");
+      this.levels.tail.value = newArea;
+    } else if (newArea.includes(">exp ")) {
+      newArea = newArea.replace(">exp ", "");
       this.levels.tail.value = newArea;
       newArea = this.expand(newArea);
       this.levels.append(newArea);

@@ -33,10 +33,10 @@ function createOrUpdateForceGraph(svg, { nodes, links }) {
     nodeStrokeOpacity: 1,
 
     // Node radius, in pixels
-    nodeRadius: 5,
+    nodeRadius: 3,
 
     // Node strength (for force simulation)
-    nodeStrength: null,
+    nodeStrength: 200,
 
     // Function to extract source node ID for links
     linkSource: ({ source }) => source,
@@ -45,19 +45,19 @@ function createOrUpdateForceGraph(svg, { nodes, links }) {
     linkTarget: ({ target }) => target,
 
     // Link stroke color
-    linkStroke: "#999",
+    linkStroke: "#8c9bba",
 
     // Link stroke opacity
     linkStrokeOpacity: 0.6,
 
     // Function to determine link stroke width
-    linkStrokeWidth: (l) => 1.5,
+    linkStrokeWidth: (l) => 1,
 
     // Link stroke linecap
     linkStrokeLinecap: "round",
 
     // Link strength (for force simulation)
-    linkStrength: 0.1,
+    linkStrength: 2,
 
     // Array of color strings for the node groups
     colors: d3.schemeTableau10,
@@ -88,9 +88,12 @@ function createOrUpdateForceGraph(svg, { nodes, links }) {
     .forceSimulation(updatedNodes)
     .force(
       "link",
-      d3.forceLink(updatedLinks).id(({ index: i }) => N[i])
-    )
-    .force("charge", d3.forceManyBody())
+      d3
+        .forceLink(updatedLinks)
+        .id(({ index: i }) => N[i])
+        .distance(100)
+    ) // Increase the distance between connected nodes
+    .force("charge", d3.forceManyBody().strength(-50))
     .force(
       "center",
       d3.forceCenter(window.innerWidth / 2, window.innerHeight / 2)
@@ -104,7 +107,8 @@ function createOrUpdateForceGraph(svg, { nodes, links }) {
     .join("line")
     .attr("stroke", config.linkStroke)
     .attr("stroke-opacity", config.linkStrokeOpacity)
-    .attr("stroke-width", config.linkStrokeWidth);
+    .attr("stroke-width", config.linkStrokeWidth)
+    .attr("marker-end", "url(#arrow)"); // Apply the 'arrow' marker to each link
 
   // Select or create the node elements
   const node = svg
@@ -122,7 +126,7 @@ function createOrUpdateForceGraph(svg, { nodes, links }) {
     .selectAll("text")
     .data(updatedNodes)
     .join("text")
-    .text((d) => "[" + d.id + "]") // Set text content to node id (or any property you want to display)
+    .text((d) => d.id) // Set text content to node id (or any property you want to display)
     .attr("fill", "white") // Set text color to white
     .attr("font-size", "10px") // Set font size
     .attr("font-weight", "bold") // Set font weight
@@ -175,6 +179,23 @@ function createOrUpdateForceGraph(svg, { nodes, links }) {
   return { simulation };
 }
 
+function addArrowMarkerDefs(svg) {
+  // Add arrow marker definition
+  svg
+    .append("defs")
+    .append("marker")
+    .attr("id", "arrow")
+    .attr("viewBox", "0 0 10 10")
+    .attr("refX", 8) // x-coordinate of the arrow point
+    .attr("refY", 5) // y-coordinate of the arrow point
+    .attr("markerWidth", 8) // width of the arrow
+    .attr("markerHeight", 8) // height of the arrow
+    .attr("orient", "auto")
+    .append("path")
+    .attr("d", "M0,0 L10,5 L0,10 Z") // arrow path
+    .attr("fill", "#999"); // arrow color
+}
+
 // Usage within a React component
 function Graph({ graphData }) {
   const svgRef = useRef(null);
@@ -183,7 +204,7 @@ function Graph({ graphData }) {
   useEffect(() => {
     if (svgRef.current) {
       const svg = d3.select(svgRef.current);
-
+      addArrowMarkerDefs(svg);
       // Create or update the force-directed graph
       const { simulation } = createOrUpdateForceGraph(svg, {
         nodes,

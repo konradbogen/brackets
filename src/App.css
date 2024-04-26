@@ -13,8 +13,7 @@
 }
 
 .text {
-  font: 14pt sans-serif;
-  fill: red;
+  font: 18pt sans-serif;
 }
 
 textarea {
@@ -73,7 +72,7 @@ textarea {
 }
 
 text {
-  font-size: 10px;
+  font-size: 12px;
   font-family: "Source Code Pro";
 }
 
