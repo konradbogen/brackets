@@ -1,3 +1,8 @@
+:root {
+  --color-primary: #282c34;
+  --color-secondary: #424a59;
+}
+
 .App {
   text-align: center;
 }
@@ -16,7 +21,7 @@ textarea {
   width: 100%;
   height: 100vh;
   border: none;
-  color: white;
+  color: black;
   overflow: auto;
   outline: none;
   background-color: transparent;
@@ -74,8 +79,8 @@ text {
 
 body {
   overflow: hidden;
-  background-color: rgb(60, 66, 77);
-  transition: background-color 0.3s ease; /* Smooth transition for background color */
+  background-color: var(--color-secondary);
+  transition: background-color 1.5s ease; /* Smooth transition for background color */
 }
 
 svg {

@@ -23,10 +23,10 @@ class App extends React.Component<Props, State> {
   async handleTabPress() {
     if (this.state.mode === true) {
       let gd = await fetchGraph();
-      document.body.style.backgroundColor = "#282c34"; // Set background color
+      document.body.style.backgroundColor = "var(--color-primary)"; // Set background color
       this.setState({ mode: false, graphData: gd });
     } else {
-      document.body.style.backgroundColor = "rgb(60, 66, 77)";
+      document.body.style.backgroundColor = "var(--color-secondary)";
       this.setState({ mode: true });
     }
   }
