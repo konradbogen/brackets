@@ -14,10 +14,15 @@ class App extends React.Component<Props, State> {
 
   constructor(props: Props) {
     super(props);
-    this.state = { area: "", mode: true, graphData: null };
+    this.state = { area: "", mode: true, graphData: { nodes: [], links: [] } };
     this.levels = new LevelList("");
     this.map = new Map<string, string>();
     this.fetchDB();
+  }
+
+  async componentDidMount() {
+    let gd = await fetchGraph();
+    this.setState({ mode: false, graphData: gd });
   }
 
   async handleTabPress() {
@@ -31,29 +36,59 @@ class App extends React.Component<Props, State> {
     }
   }
 
-  component() {
+  splitComponent() {
+    return (
+      <div>
+        <div className="splitLeft">
+          <div>
+            <TabKeyListener onTabPress={this.handleTabPress.bind(this)} />
+            <textarea
+              value={this.state.area}
+              onChange={(e) => this.handleChange(e)}
+            />
+          </div>
+        </div>
+        <div className="splitRight">
+          <div>
+            <Graph graphData={this.state.graphData} />
+            <TabKeyListener onTabPress={this.handleTabPress.bind(this)} />
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  fullComponent() {
     if (this.state.mode) {
-      return (
-        <div>
-          <TabKeyListener onTabPress={this.handleTabPress.bind(this)} />
-          <textarea
-            value={this.state.area}
-            onChange={(e) => this.handleChange(e)}
-          />
-        </div>
-      );
+      return this.graphComponent();
     } else {
-      return (
-        <div>
-          <Graph graphData={this.state.graphData} />
-          <TabKeyListener onTabPress={this.handleTabPress.bind(this)} />
-        </div>
-      );
+      return this.editorComponent();
     }
   }
 
+  graphComponent() {
+    return (
+      <div>
+        <TabKeyListener onTabPress={this.handleTabPress.bind(this)} />
+        <textarea
+          value={this.state.area}
+          onChange={(e) => this.handleChange(e)}
+        />
+      </div>
+    );
+  }
+
+  editorComponent() {
+    return (
+      <div>
+        <Graph graphData={this.state.graphData} />
+        <TabKeyListener onTabPress={this.handleTabPress.bind(this)} />
+      </div>
+    );
+  }
+
   render() {
-    return this.component();
+    return this.splitComponent();
   }
 
   handleChange(event: React.ChangeEvent<HTMLTextAreaElement>) {
@@ -88,7 +123,7 @@ class App extends React.Component<Props, State> {
     });
   }
 
-  load(filename: string) {
+  async load(filename: string) {
     let content = this.map.get(filename);
     if (content !== undefined) {
       console.log("Sucessful Load");
@@ -111,6 +146,8 @@ class App extends React.Component<Props, State> {
       this.fetchDB();
     };
     xhr.send("bracket=" + bracket + "&content=" + content);
+    let gd = await fetchGraph();
+    this.setState({ mode: false, graphData: gd });
   }
 
   async fetchDB() {

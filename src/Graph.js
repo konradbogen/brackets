@@ -1,5 +1,5 @@
 import * as d3 from "d3";
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, useMemo } from "react";
 
 // Define a function to create or update the force-directed graph
 function createOrUpdateForceGraph(svg, { nodes, links }) {
@@ -33,7 +33,7 @@ function createOrUpdateForceGraph(svg, { nodes, links }) {
     nodeStrokeOpacity: 1,
 
     // Node radius, in pixels
-    nodeRadius: 3,
+    nodeRadius: 5,
 
     // Node strength (for force simulation)
     nodeStrength: 200,
@@ -45,7 +45,7 @@ function createOrUpdateForceGraph(svg, { nodes, links }) {
     linkTarget: ({ target }) => target,
 
     // Link stroke color
-    linkStroke: "#8c9bba",
+    linkStroke: "#5e5d5a",
 
     // Link stroke opacity
     linkStrokeOpacity: 0.6,
@@ -63,7 +63,7 @@ function createOrUpdateForceGraph(svg, { nodes, links }) {
     colors: d3.schemeTableau10,
 
     // Outer width of the SVG container, in pixels
-    width: window.innerWidth,
+    width: window.innerWidth / 2,
 
     // Outer height of the SVG container, in pixels
     height: window.innerHeight,
@@ -93,12 +93,18 @@ function createOrUpdateForceGraph(svg, { nodes, links }) {
         .id(({ index: i }) => N[i])
         .distance(100)
     ) // Increase the distance between connected nodes
-    .force("charge", d3.forceManyBody().strength(-50))
+    .force("charge", d3.forceManyBody().strength(-20))
     .force(
       "center",
-      d3.forceCenter(window.innerWidth / 2, window.innerHeight / 2)
+      d3.forceCenter(window.innerWidth / 4, window.innerHeight / 2)
     ) // Center force
     .on("tick", ticked);
+
+  // Set initial positions of nodes (static)
+  nodes.forEach((node) => {
+    node.fx = node.x; // Set fixed x-coordinate
+    node.fy = node.y; // Set fixed y-coordinate
+  });
 
   // Select or create the link elements
   const link = svg
@@ -188,36 +194,35 @@ function addArrowMarkerDefs(svg) {
     .attr("viewBox", "0 0 10 10")
     .attr("refX", 8) // x-coordinate of the arrow point
     .attr("refY", 5) // y-coordinate of the arrow point
-    .attr("markerWidth", 8) // width of the arrow
-    .attr("markerHeight", 8) // height of the arrow
+    .attr("markerWidth", 10) // width of the arrow
+    .attr("markerHeight", 10) // height of the arrow
     .attr("orient", "auto")
     .append("path")
     .attr("d", "M0,0 L10,5 L0,10 Z") // arrow path
-    .attr("fill", "#999"); // arrow color
+    .attr("fill", "#5e5d5a"); // arrow color
 }
 
 // Usage within a React component
 function Graph({ graphData }) {
   const svgRef = useRef(null);
-  const { nodes, links, ...config } = graphData;
+
+  // Memoize the graphData to create a stable reference
+  const memoizedGraphData = useMemo(() => graphData, [graphData]);
 
   useEffect(() => {
     if (svgRef.current) {
       const svg = d3.select(svgRef.current);
       addArrowMarkerDefs(svg);
+
       // Create or update the force-directed graph
-      const { simulation } = createOrUpdateForceGraph(svg, {
-        nodes,
-        links,
-        ...config,
-      });
+      const { simulation } = createOrUpdateForceGraph(svg, memoizedGraphData);
 
       // Clean up the simulation when component unmounts
       return () => {
         simulation.stop();
       };
     }
-  }, [nodes, links, config]);
+  }, [memoizedGraphData]);
 
   return (
     <div

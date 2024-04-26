@@ -50,7 +50,9 @@ function makeNodes(data: any) {
 async function fetchGraph() {
   let _edges = await fetchEdges();
   let _nodes = await nodes();
-  _nodes = nodesFromEdges(_edges, _nodes);
+  if (_nodes != null && _edges != null) {
+    _nodes = nodesFromEdges(_edges, _nodes);
+  }
   return { nodes: _nodes, links: _edges };
 }
 
