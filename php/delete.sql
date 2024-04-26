@@ -1,2 +1,2 @@
-DELETE FROM Entries WHERE bracket="abc2";
-DELETE FROM Edges WHERE source="hello" OR target='yugi';
+DELETE FROM Entries WHERE bracket="todo";
+DELETE FROM Edges WHERE source="todo" OR target='yugi';

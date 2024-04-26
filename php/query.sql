@@ -5,5 +5,3 @@ CREATE TABLE Entries (
     content VARCHAR
 );
 
-INSERT INTO Entries (bracket, content) VALUES ("hello", "Hello World[descr]");
-INSERT INTO Entries (bracket, content) VALUES ("descr", "Whats Up");

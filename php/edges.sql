@@ -8,4 +8,3 @@ CREATE TABLE Edges (
     FOREIGN KEY (target) REFERENCES Entries(bracket)
 );
 
-INSERT INTO Edges (source, target, value) VALUES ("hello", "descr", 1);
