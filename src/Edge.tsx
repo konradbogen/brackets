@@ -1,4 +1,4 @@
-function send(map: Map<String, String>) {
+async function send(map: Map<String, String>) {
   console.log("SEND EGDE");
   const edges = Array<Object>();
   map.forEach((_value, key) => {
@@ -21,7 +21,7 @@ function send(map: Map<String, String>) {
     }
   });
   console.log(edges);
-  sendRequest(edges);
+  await sendRequest(edges);
 }
 
 async function nodes() {
@@ -55,7 +55,7 @@ async function fetchGraph() {
 }
 
 function nodesFromEdges(edges: any, nodes: any) {
-  let knownNodes: Array<String> = [];
+  let knownNodes: Array<String> = nodes.map((node: { id: string }) => node.id);
   edges.forEach((edge: any) => {
     if (knownNodes.includes(edge.source) === false) {
       knownNodes.push(edge.source);

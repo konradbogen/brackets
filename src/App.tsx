@@ -107,7 +107,6 @@ class App extends React.Component<Props, State> {
     xhr.onload = () => {
       console.log(xhr.responseText);
       this.fetchDB();
-      send(this.map);
     };
     xhr.send("bracket=" + bracket + "&content=" + content);
   }
@@ -123,6 +122,7 @@ class App extends React.Component<Props, State> {
       data = JSON.parse(data);
       this.makeMap(data);
       console.log(this.map);
+      send(this.map);
     }
   }
 

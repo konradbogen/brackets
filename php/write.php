@@ -8,5 +8,6 @@
     echo $query;
     $db = new SQLite3("data.db");
     $db->exec($deleteQuery);
+    $db->exec($deleteEdgeQuery);
     $db->exec($query);
     $db->close();
