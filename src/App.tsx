@@ -141,13 +141,14 @@ class App extends React.Component<Props, State> {
       true
     );
     xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-    xhr.onload = () => {
+    xhr.onload = async () => {
       console.log(xhr.responseText);
-      this.fetchDB();
+      await this.fetchDB();
+      await send(this.map);
+      let gd = await fetchGraph();
+      this.setState({ mode: false, graphData: gd });
     };
-    xhr.send("bracket=" + bracket + "&content=" + content);
-    let gd = await fetchGraph();
-    this.setState({ mode: false, graphData: gd });
+    await xhr.send("bracket=" + bracket + "&content=" + content);
   }
 
   async fetchDB() {
@@ -161,7 +162,6 @@ class App extends React.Component<Props, State> {
       data = JSON.parse(data);
       this.makeMap(data);
       console.log(this.map);
-      send(this.map);
     }
   }
 
@@ -193,7 +193,7 @@ class App extends React.Component<Props, State> {
     let expanded = from;
     currentMap.forEach((_value, key) => {
       let bracketKey = "[" + key + "]";
-      let content = _value;
+      let content = "[" + key + "/]" + _value;
       expanded = expanded.replaceAll(bracketKey, content);
     });
     console.log("exp");
