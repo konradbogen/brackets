@@ -95,6 +95,7 @@ class App extends React.Component<Props, State> {
     let newArea = event.target.value;
     let loadMatch = newArea.match(">load_.* ");
     let saveMatch = newArea.match(">save_.* ");
+    let deleteMatch = newArea.match(">delete_.* ");
     if (newArea.includes(">close ")) {
       newArea = newArea.replace(">close ", "");
       this.levels.delete();
@@ -110,6 +111,11 @@ class App extends React.Component<Props, State> {
       );
       newArea = newArea.replace(">save_" + fileName + " ", "");
       this.levels.tail.value = newArea;
+    } else if (deleteMatch) {
+      let fileName = deleteMatch[0].split("_")[1].replace(" ", "");
+      this.delete(fileName);
+      newArea = newArea.replace(">delete_" + fileName + " ", "");
+      this.levels = new LevelList(newArea);
     } else if (newArea.includes(">exp ")) {
       newArea = newArea.replace(">exp ", "");
       this.levels.tail.value = newArea;
@@ -145,10 +151,32 @@ class App extends React.Component<Props, State> {
       console.log(xhr.responseText);
       await this.fetchDB();
       await send(this.map);
-      let gd = await fetchGraph();
-      this.setState({ mode: false, graphData: gd });
+      setTimeout(async () => {
+        let gd = await fetchGraph();
+        this.setState({ mode: false, graphData: gd });
+      }, 300);
     };
     await xhr.send("bracket=" + bracket + "&content=" + content);
+  }
+
+  async delete(bracket: string) {
+    var xhr = new XMLHttpRequest();
+    xhr.open(
+      "POST",
+      "http://localhost:8889/brackets editor/php/delete.php?bracket=fo",
+      true
+    );
+    xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    xhr.onload = async () => {
+      console.log(xhr.responseText);
+      await this.fetchDB();
+      await send(this.map);
+      setTimeout(async () => {
+        let gd = await fetchGraph();
+        this.setState({ mode: false, graphData: gd });
+      }, 300);
+    };
+    await xhr.send("bracket=" + bracket);
   }
 
   async fetchDB() {
