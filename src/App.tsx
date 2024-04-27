@@ -102,7 +102,11 @@ class App extends React.Component<Props, State> {
     } else if (loadMatch) {
       let fileName = loadMatch[0].split("_")[1].replace(" ", "");
       console.log(fileName);
-      this.load(fileName);
+      if (fileName === "master") {
+        this.list();
+      } else {
+        this.load(fileName);
+      }
     } else if (saveMatch) {
       let fileName = saveMatch[0].split("_")[1].replace(" ", "");
       this.save(
@@ -131,6 +135,10 @@ class App extends React.Component<Props, State> {
 
   async load(filename: string) {
     let content = this.map.get(filename);
+    if (content == null) {
+      return false;
+    }
+    content = this.removeTrailingSpace(content);
     if (content !== undefined) {
       console.log("Sucessful Load");
       this.levels = new LevelList(content);
@@ -140,6 +148,7 @@ class App extends React.Component<Props, State> {
   }
 
   async save(bracket: string, content: string) {
+    content = this.removeTrailingSpace(content);
     var xhr = new XMLHttpRequest();
     xhr.open(
       "POST",
@@ -208,7 +217,11 @@ class App extends React.Component<Props, State> {
         text += "[" + key + "]\n";
       }
     });
-    this.save("master", text);
+    this.levels = new LevelList(text);
+  }
+
+  removeTrailingSpace(str: string) {
+    return str.replace(/\n+$/, "");
   }
 
   expand(from: string) {
@@ -221,7 +234,8 @@ class App extends React.Component<Props, State> {
     let expanded = from;
     currentMap.forEach((_value, key) => {
       let bracketKey = "[" + key + "]";
-      let content = "[" + key + "/]" + _value;
+      let content = _value;
+      content = this.removeTrailingSpace(content);
       expanded = expanded.replaceAll(bracketKey, content);
     });
     console.log("exp");

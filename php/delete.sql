@@ -1,2 +1,2 @@
-DELETE FROM Entries WHERE bracket="todo";
-DELETE FROM Edges WHERE source="todo" OR target='yugi';
+DELETE FROM Entries WHERE bracket="RadioPain";
+DELETE FROM Edges WHERE source="RadioPain" OR target='RadioPain';

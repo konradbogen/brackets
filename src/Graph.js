@@ -93,12 +93,20 @@ function createOrUpdateForceGraph(svg, { nodes, links }) {
         .id(({ index: i }) => N[i])
         .distance(100)
     ) // Increase the distance between connected nodes
-    .force("charge", d3.forceManyBody().strength(-20))
+    .force("charge", d3.forceManyBody().strength(-200))
     .force(
       "center",
       d3.forceCenter(window.innerWidth / 4, window.innerHeight / 2)
     ) // Center force
-    .on("tick", ticked);
+    .on("tick", ticked)
+    .force(
+      "x",
+      d3.forceX().x((d) => Math.max(0, Math.min(window.innerWidth / 2, d.x)))
+    )
+    .force(
+      "y",
+      d3.forceY().y((d) => Math.max(0, Math.min(window.innerHeight / 2, d.y)))
+    );
 
   // Set initial positions of nodes (static)
   nodes.forEach((node) => {

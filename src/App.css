@@ -20,7 +20,7 @@ textarea {
   width: 100%;
   height: 100vh;
   border: none;
-  color: black;
+  color: white;
   overflow: auto;
   outline: none;
   background-color: transparent;
@@ -39,7 +39,7 @@ textarea {
 .splitLeft {
   width: 50%;
   position: absolute;
-  background-color: #fffee9;
+  background-color: var(--color-primary);
 }
 
 .splitRight {
@@ -86,7 +86,6 @@ textarea {
 text {
   font-size: 12px;
   font-family: "Source Code Pro";
-  cursor: default;
 }
 
 body {
