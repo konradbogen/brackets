@@ -45,7 +45,7 @@ function createOrUpdateForceGraph(svg, { nodes, links }) {
     linkTarget: ({ target }) => target,
 
     // Link stroke color
-    linkStroke: "#5e5d5a",
+    linkStroke: "#707174",
 
     // Link stroke opacity
     linkStrokeOpacity: 0.6,
