@@ -1,5 +1,5 @@
 :root {
-  --color-primary: #282c34;
+  --color-primary: white;
   --color-secondary: #474e5e;
 }
 
@@ -20,7 +20,7 @@ textarea {
   width: 100%;
   height: 100vh;
   border: none;
-  color: white;
+  color: var(--color-secondary);
   overflow: auto;
   outline: none;
   background-color: transparent;

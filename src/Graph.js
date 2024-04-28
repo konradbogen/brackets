@@ -21,7 +21,7 @@ function createOrUpdateForceGraph(svg, { nodes, links }) {
     nodeTitle: (d) => `${d.id}\n${d.group}`,
 
     // Node stroke fill (if not using a group color encoding)
-    nodeFill: "white",
+    nodeFill: "var(--color-secondary)",
 
     // Node stroke color
     nodeStroke: "transparent",
@@ -141,7 +141,7 @@ function createOrUpdateForceGraph(svg, { nodes, links }) {
     .data(updatedNodes)
     .join("text")
     .text((d) => d.id) // Set text content to node id (or any property you want to display)
-    .attr("fill", "white") // Set text color to white
+    .attr("fill", "black") // Set text color to white
     .attr("font-size", "10px") // Set font size
     .attr("font-weight", "bold") // Set font weight
     .attr("text-anchor", "middle") // Set text anchor to middle for center alignment
@@ -207,7 +207,7 @@ function addArrowMarkerDefs(svg) {
     .attr("orient", "auto")
     .append("path")
     .attr("d", "M0,0 L10,5 L0,10 Z") // arrow path
-    .attr("fill", "#5e5d5a"); // arrow color
+    .attr("fill", "var(--color-secondary)"); // arrow color
 }
 
 // Usage within a React component
