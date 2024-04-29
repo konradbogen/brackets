@@ -150,11 +150,7 @@ class App extends React.Component<Props, State> {
   async save(bracket: string, content: string) {
     content = this.removeTrailingSpace(content);
     var xhr = new XMLHttpRequest();
-    xhr.open(
-      "POST",
-      "http://localhost:8889/brackets editor/php/write.php?bracket=fo?content=fi",
-      true
-    );
+    xhr.open("POST", "/app/php/write.php?bracket=fo?content=fi", true);
     xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
     xhr.onload = async () => {
       console.log(xhr.responseText);
@@ -170,11 +166,7 @@ class App extends React.Component<Props, State> {
 
   async delete(bracket: string) {
     var xhr = new XMLHttpRequest();
-    xhr.open(
-      "POST",
-      "http://localhost:8889/brackets editor/php/delete.php?bracket=fo",
-      true
-    );
+    xhr.open("POST", "/app/php/delete.php?bracket=fo", true);
     xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
     xhr.onload = async () => {
       console.log(xhr.responseText);
@@ -189,9 +181,7 @@ class App extends React.Component<Props, State> {
   }
 
   async fetchDB() {
-    let response = await fetch(
-      "http://localhost:8889/brackets editor/php/read.php"
-    );
+    let response = await fetch("/app/php/read.php");
     console.log(response.status);
     console.log(response.statusText);
     if (response.status === 200) {
@@ -213,7 +203,7 @@ class App extends React.Component<Props, State> {
   list() {
     let text = "";
     this.map.forEach((_value, key) => {
-      if (key != "master") {
+      if (key !== "master") {
         text += "[" + key + "]\n";
       }
     });

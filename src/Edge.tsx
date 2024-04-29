@@ -25,9 +25,7 @@ async function send(map: Map<String, String>) {
 }
 
 async function nodes() {
-  let response = await fetch(
-    "http://localhost:8889/brackets editor/php/read.php"
-  );
+  let response = await fetch("/app/php/read.php");
   console.log(response.status);
   console.log(response.statusText);
   if (response.status === 200) {
@@ -72,9 +70,7 @@ function nodesFromEdges(edges: any, nodes: any) {
 }
 
 async function fetchEdges() {
-  let response = await fetch(
-    "http://localhost:8889/brackets editor/php/getEdges.php"
-  );
+  let response = await fetch("/app/php/getEdges.php");
   console.log(response.status);
   console.log(response.statusText);
   if (response.status === 200) {
@@ -92,7 +88,7 @@ async function fetchEdges() {
 function sendRequest(edges: Array<Object>) {
   // Send JSON data to PHP script using fetch API
   var xhr = new XMLHttpRequest();
-  xhr.open("POST", "http://localhost:8889/brackets editor/php/edge.php", true);
+  xhr.open("POST", "/app/php/edge.php", true);
   xhr.setRequestHeader("Content-type", "application/json");
   xhr.onload = () => {
     console.log(xhr.responseText);

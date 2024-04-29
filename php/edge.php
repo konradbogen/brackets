@@ -1,52 +1,59 @@
 <?php
-      // Allow from any origin
-  if (isset($_SERVER['HTTP_ORIGIN'])) {
-      // Decide if the origin in $_SERVER['HTTP_ORIGIN'] is one
-      // you want to allow, and if so:
-      header("Access-Control-Allow-Origin: {$_SERVER['HTTP_ORIGIN']}");
-      header('Access-Control-Allow-Credentials: true');
-      header('Access-Control-Max-Age: 86400');    // cache for 1 day
-  }
-  
-  // Access-Control headers are received during OPTIONS requests
-  if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
-      
-      if (isset($_SERVER['HTTP_ACCESS_CONTROL_REQUEST_METHOD']))
-          // may also be using PUT, PATCH, HEAD etc
-          header("Access-Control-Allow-Methods: GET, POST, OPTIONS");
-      
-      if (isset($_SERVER['HTTP_ACCESS_CONTROL_REQUEST_HEADERS']))
-          header("Access-Control-Allow-Headers: {$_SERVER['HTTP_ACCESS_CONTROL_REQUEST_HEADERS']}");
-  
-      exit(0);
-  }
+$servername = "localhost";  // Hostname des Datenbankservers
+$username = "web177_2";     // Benutzername für den Datenbankzugriff
+$password = "root";     // Passwort für den Datenbankzugriff
+$dbname = "root";  // Name der Datenbank
 
-  echo "You have CORS!";
+// Create a new MySQL database connection
+$db = new mysqli($servername, $username, $password, $dbname);
 
+// Check if the connection was successful
+if ($db->connect_error) {
+    die("Connection failed: " . $db->connect_error);
+}
 
 // Read incoming JSON data
 $jsonData = file_get_contents('php://input');
+
 // Decode JSON data into PHP array
 $edges = json_decode($jsonData, true);
+
+// Check if JSON decoding was successful
 if ($edges === null) {
-  // Handle JSON decoding error
-  http_response_code(400); // Bad request
-  die('Invalid JSON data');
+    // Handle JSON decoding error
+    http_response_code(400); // Bad request
+    die('Invalid JSON data');
 }
-// Open SQLite database connection (adjust path as needed)
-$db = new SQLite3('data.db');
-// Prepare SQLite statement for inserting edges
-$stmt = $db->prepare('INSERT INTO edges (source, target, value) VALUES (:source, :target, :value)');
+
+// Prepare MySQL statement for inserting edges
+$stmt = $db->prepare('INSERT INTO Edges (source, target, value) VALUES (?, ?, ?)');
+
+// Check if statement preparation was successful
+if (!$stmt) {
+    die("Prepare failed: " . $db->error);
+}
+
 // Bind parameters and execute the statement for each edge
 foreach ($edges as $edge) {
-  $stmt->bindValue(':source', $edge['source'], SQLITE3_TEXT);
-  $stmt->bindValue(':target', $edge['target'], SQLITE3_TEXT);
-  $stmt->bindValue(':value', $edge['value'], SQLITE3_INTEGER);
-  $stmt->execute();
+    $source = $edge['source'];
+    $target = $edge['target'];
+    $value = $edge['value'];
+
+    $stmt->bind_param('ssi', $source, $target, $value);
+    $stmt->execute();
+
+    // Check for errors during execution
+    if ($stmt->errno) {
+        die("Execute failed: " . $stmt->error);
+    }
 }
-// Close statement and database connection
+
+// Close statement
 $stmt->close();
+
+// Close database connection
 $db->close();
+
 // Respond with success message (optional)
-echo 'From PHP: Edges inserted successfully';
+echo 'Edges inserted successfully';
 

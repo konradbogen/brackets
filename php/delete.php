@@ -1,9 +1,15 @@
 <?php
-    header("Access-Control-Allow-Origin: *");
+    
+    $servername = "s198.goserver.host";  // Hostname des Datenbankservers
+    $username = "web177_2";     // Benutzername für den Datenbankzugriff
+    $password = "Ten.avaj99";     // Passwort für den Datenbankzugriff
+    $dbname = "web177_db2";  // Name der Datenbank
+
     $bracket = $_POST['bracket'];
     $deleteQuery = "DELETE FROM Entries WHERE bracket='" . $bracket . "'";
     $deleteEdgeQuery =  "DELETE FROM Edges WHERE target='" . $bracket . "' OR source='" . $bracket . "'";
-    $db = new SQLite3("data.db");
-    $db->exec($deleteQuery);
-    $db->exec($deleteEdgeQuery);
+    
+    $db = new mysqli($servername, $username, $password, $dbname);
+    $db->query($deleteQuery);
+    $db->query($deleteEdgeQuery);
     $db->close();

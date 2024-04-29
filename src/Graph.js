@@ -21,7 +21,7 @@ function createOrUpdateForceGraph(svg, { nodes, links }) {
     nodeTitle: (d) => `${d.id}\n${d.group}`,
 
     // Node stroke fill (if not using a group color encoding)
-    nodeFill: "var(--color-secondary)",
+    nodeFill: "white",
 
     // Node stroke color
     nodeStroke: "transparent",
@@ -63,10 +63,10 @@ function createOrUpdateForceGraph(svg, { nodes, links }) {
     colors: d3.schemeTableau10,
 
     // Outer width of the SVG container, in pixels
-    width: window.innerWidth / 2,
+    width: window.innerWidth,
 
     // Outer height of the SVG container, in pixels
-    height: window.innerHeight,
+    height: window.innerHeight / 2,
 
     // Promise that resolves to stop the simulation
     invalidation: null,
@@ -96,7 +96,7 @@ function createOrUpdateForceGraph(svg, { nodes, links }) {
     .force("charge", d3.forceManyBody().strength(-200))
     .force(
       "center",
-      d3.forceCenter(window.innerWidth / 4, window.innerHeight / 2)
+      d3.forceCenter(window.innerWidth / 2, window.innerHeight / 4)
     ) // Center force
     .on("tick", ticked)
     .force(
