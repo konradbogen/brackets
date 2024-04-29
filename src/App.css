@@ -1,6 +1,6 @@
 :root {
-  --color-primary: #282c34;
-  --color-secondary: #474e5e;
+  --color-primary: #483f54;
+  --color-secondary: #white;
 }
 
 .App {
@@ -20,15 +20,15 @@ textarea {
   width: 100%;
   height: 50vh;
   border: none;
-  color: white;
+  color: black;
   overflow: scroll;
   outline: none;
   background-color: transparent;
   -webkit-box-shadow: none;
   -moz-box-shadow: none;
   box-shadow: none;
-  font-family: "San Franscisco";
-  font-size: 19px;
+  font-family: "Source Code Pro";
+  font-size: 16px;
   resize: none; /*remove the resize handle on the bottom right*/
 }
 
@@ -38,7 +38,7 @@ textarea {
   }
 }
 .splitLeft {
-  top: 0%;
+  top: 50%;
   height: 50%;
   position: absolute;
   width: 100%;
@@ -48,13 +48,13 @@ textarea {
 .splitRight {
   height: 50%;
   width: 100%;
-  top: 50%;
+  top: 0%;
   position: absolute;
   background-color: var(--color-primary);
 }
 
 .App-header {
-  background-color: #282c34;
+  background-color: var(--color-primary);
   min-height: 100vh;
   display: flex;
   flex-direction: column;
@@ -88,8 +88,9 @@ textarea {
 }
 
 text {
-  font-size: 16px;
-  font-family: "San Franscisco";
+  font-size: 13px;
+  font-family: "Source Code Pro";
+  color: var(--color-secondary);
 }
 
 body {

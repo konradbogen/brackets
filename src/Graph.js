@@ -21,7 +21,7 @@ function createOrUpdateForceGraph(svg, { nodes, links }) {
     nodeTitle: (d) => `${d.id}\n${d.group}`,
 
     // Node stroke fill (if not using a group color encoding)
-    nodeFill: "white",
+    nodeFill: "var(--color-secondary)",
 
     // Node stroke color
     nodeStroke: "transparent",
@@ -33,7 +33,7 @@ function createOrUpdateForceGraph(svg, { nodes, links }) {
     nodeStrokeOpacity: 1,
 
     // Node radius, in pixels
-    nodeRadius: 5,
+    nodeRadius: 7,
 
     // Node strength (for force simulation)
     nodeStrength: 200,
@@ -141,13 +141,12 @@ function createOrUpdateForceGraph(svg, { nodes, links }) {
     .data(updatedNodes)
     .join("text")
     .text((d) => d.id) // Set text content to node id (or any property you want to display)
-    .attr("fill", "black") // Set text color to white
+    .attr("fill", "var(--color-secondary)") // Set text color to white
     .attr("font-size", "10px") // Set font size
     .attr("font-weight", "bold") // Set font weight
     .attr("text-anchor", "middle") // Set text anchor to middle for center alignment
-    .attr("dy", 4) // Adjust vertical position relative to circle (optional)
-    .attr("fill", config.nodeFill)
-    .attr("stroke", config.nodeStroke)
+    .attr("dy", 7) // Adjust vertical position relative to circle (optional)
+    .attr("stroke", "var(--color-secondary)")
     .attr("stroke-opacity", config.nodeStrokeOpacity)
     .attr("stroke-width", config.nodeStrokeWidth)
     .call(drag(simulation));
@@ -236,7 +235,7 @@ function Graph({ graphData }) {
     <div
       style={{
         width: "100%",
-        height: "100vh",
+        height: "50vh",
         display: "flex",
         justifyContent: "center",
         alignItems: "center",

@@ -18,6 +18,10 @@ class App extends React.Component<Props, State> {
     this.levels = new LevelList("");
     this.map = new Map<string, string>();
     this.fetchDB();
+
+    document.ontouchstart = function (e) {
+      e.preventDefault();
+    };
   }
 
   async componentDidMount() {
