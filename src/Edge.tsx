@@ -1,5 +1,4 @@
 async function send(map: Map<String, String>) {
-  console.log("SEND EGDE");
   const edges = Array<Object>();
   map.forEach((_value, key) => {
     // eslint-disable-next-line no-useless-escape
@@ -9,17 +8,20 @@ async function send(map: Map<String, String>) {
     // Using match() with the regex pattern to get all matches
     const matches = _value.match(regexPattern);
     let prev: string | null = null;
+    let idHash: Array<String> = new Array<String>();
     if (matches != null) {
       matches.forEach((target) => {
         let current = target.replace("[", "").replace("]", "");
         if (prev != null) {
-          let edge = {
-            source: prev,
-            target: current,
-            value: 1,
-          };
-          edges.push(edge);
-          console.log(edge);
+          let hash = prev + "-" + current;
+          if (idHash.includes(hash) === false) {
+            let edge = {
+              source: prev,
+              target: current,
+              value: 1,
+            };
+            edges.push(edge);
+          }
         }
         prev = current;
       });
@@ -76,15 +78,9 @@ function nodesFromEdges(edges: any, nodes: any) {
 
 async function fetchEdges() {
   let response = await fetch("/app/php/getEdges.php");
-  console.log(response.status);
-  console.log(response.statusText);
   if (response.status === 200) {
     let data = await response.text();
-    console.log("fetch edges");
-    console.log(data);
     data = JSON.parse(data);
-    console.log("FINAL");
-    console.log(data);
     return data;
   }
   return null;
@@ -96,6 +92,7 @@ function sendRequest(edges: Array<Object>) {
   xhr.open("POST", "/app/php/edge.php", true);
   xhr.setRequestHeader("Content-type", "application/json");
   xhr.onload = () => {
+    console.log("EDGE SEND");
     console.log(xhr.responseText);
   };
   xhr.send(JSON.stringify(edges));

@@ -100,6 +100,7 @@ class App extends React.Component<Props, State> {
     let newArea = event.target.value;
     let loadMatch = newArea.match(">load_.* ");
     let saveMatch = newArea.match(">save_.* ");
+    let renameMatch = newArea.match(">rename_.*_.* ");
     let deleteMatch = newArea.match(">delete_.* ");
     if (newArea.includes(">close ")) {
       newArea = newArea.replace(">close ", "");
@@ -108,9 +109,14 @@ class App extends React.Component<Props, State> {
       newArea = newArea.replace(">lily ", "");
       let syntax = lily(newArea);
       this.levels.append(syntax);
+    } else if (renameMatch) {
+      let _old = renameMatch[0].split("_")[1];
+      let _new = renameMatch[0].split("_")[2].replace(" ", "");
+      newArea = newArea.replace(">rename_" + _old + "_" + _new + " ", "");
+      this.levels.tail.value = newArea;
+      this.rename(_old, _new);
     } else if (loadMatch) {
       let fileName = loadMatch[0].split("_")[1].replace(" ", "");
-      console.log(fileName);
       if (fileName === "master") {
         this.list();
       } else {
@@ -149,11 +155,27 @@ class App extends React.Component<Props, State> {
     }
     content = this.removeTrailingSpace(content);
     if (content !== undefined) {
-      console.log("Sucessful Load");
       this.levels = new LevelList(content);
     } else {
       console.log("Load failed");
     }
+  }
+
+  async rename(_old: string, _new: string) {
+    var xhr = new XMLHttpRequest();
+    xhr.open("POST", "/app/php/rename.php?old=fo?new=fi", true);
+    xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    xhr.onload = async () => {
+      console.log("RENAME RESPONSE");
+      console.log(xhr.responseText);
+      await this.fetchDB();
+      await send(this.map);
+      setTimeout(async () => {
+        let gd = await fetchGraph();
+        this.setState({ mode: false, graphData: gd });
+      }, 300);
+    };
+    await xhr.send("old=" + _old + "&new=" + _new);
   }
 
   async save(bracket: string, content: string) {
@@ -164,7 +186,6 @@ class App extends React.Component<Props, State> {
     xhr.open("POST", "/app/php/write.php?bracket=fo?content=fi", true);
     xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
     xhr.onload = async () => {
-      console.log(xhr.responseText);
       await this.fetchDB();
       await send(this.map);
       setTimeout(async () => {
@@ -177,7 +198,7 @@ class App extends React.Component<Props, State> {
 
   async delete(bracket: string) {
     var xhr = new XMLHttpRequest();
-    xhr.open("POST", "/app/php/delete.php?bracket=fo", true);
+    xhr.open("POST", "/app/php/rename.php?bracket=fo", true);
     xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
     xhr.onload = async () => {
       console.log(xhr.responseText);
@@ -193,13 +214,10 @@ class App extends React.Component<Props, State> {
 
   async fetchDB() {
     let response = await fetch("/app/php/read.php");
-    console.log(response.status);
-    console.log(response.statusText);
     if (response.status === 200) {
       let data = await response.text();
       data = JSON.parse(data);
       this.makeMap(data);
-      console.log(this.map);
     }
   }
 

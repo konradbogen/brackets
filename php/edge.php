@@ -1,4 +1,15 @@
 <?php
+
+header("Access-Control-Allow-Origin: *"); // Allow requests from any origin (not recommended for production)
+header("Access-Control-Allow-Methods: GET, POST, OPTIONS"); // Allow specific HTTP methods
+header("Access-Control-Allow-Headers: Content-Type, Authorization"); // Allow specific headers
+
+ // Wenn die Anfrage eine OPTIONS-Anfrage ist, antworten Sie mit 200 OK und beenden Sie die Ausführung
+ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+    http_response_code(200);
+    exit;
+}
+
     $servername = "s198.goserver.host";  // Hostname des Datenbankservers
     $username = "web177_3";     // Benutzername für den Datenbankzugriff
     $password = "Ten.avaj99";     // Passwort für den Datenbankzugriff
@@ -34,6 +45,7 @@ if (!$stmt) {
 
 // Bind parameters and execute the statement for each edge
 foreach ($edges as $edge) {
+
     $source = $edge['source'];
     $target = $edge['target'];
     $value = $edge['value'];
@@ -43,7 +55,7 @@ foreach ($edges as $edge) {
 
     // Check for errors during execution
     if ($stmt->errno) {
-        die("Execute failed: " . $stmt->error);
+        echo $stmt->error;
     }
 }
 
