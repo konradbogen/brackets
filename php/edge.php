@@ -35,6 +35,8 @@ if ($edges === null) {
     die('Invalid JSON data');
 }
 
+$db->query("DELETE FROM Edges");
+
 // Prepare MySQL statement for inserting edges
 $stmt = $db->prepare('INSERT INTO Edges (source, target, value) VALUES (?, ?, ?)');
 

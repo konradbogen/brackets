@@ -15,12 +15,15 @@ async function send(map: Map<String, String>) {
         if (prev != null) {
           let hash = prev + "-" + current;
           if (idHash.includes(hash) === false) {
-            let edge = {
-              source: prev,
-              target: current,
-              value: 1,
-            };
-            edges.push(edge);
+            //nodes must exist
+            if (map.has(prev) && map.has(current)) {
+              let edge = {
+                source: prev,
+                target: current,
+                value: 1,
+              };
+              edges.push(edge);
+            }
           }
         }
         prev = current;
@@ -88,6 +91,8 @@ async function fetchEdges() {
 
 function sendRequest(edges: Array<Object>) {
   // Send JSON data to PHP script using fetch API
+  console.log("SEND THE FOLLOWING EDGES");
+  console.log(edges);
   var xhr = new XMLHttpRequest();
   xhr.open("POST", "/app/php/edge.php", true);
   xhr.setRequestHeader("Content-type", "application/json");

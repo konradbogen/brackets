@@ -162,6 +162,13 @@ class App extends React.Component<Props, State> {
   }
 
   async rename(_old: string, _new: string) {
+    this.map.forEach((value, key) => {
+      if (value.includes("[" + _old + "]")) {
+        let new_value = value.replace("[" + _old + "]", "[" + _new + "]");
+        this.map.set(key, new_value);
+      }
+    });
+
     var xhr = new XMLHttpRequest();
     xhr.open("POST", "/app/php/rename.php?old=fo?new=fi", true);
     xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
@@ -198,7 +205,7 @@ class App extends React.Component<Props, State> {
 
   async delete(bracket: string) {
     var xhr = new XMLHttpRequest();
-    xhr.open("POST", "/app/php/rename.php?bracket=fo", true);
+    xhr.open("POST", "/app/php/delete.php?bracket=fo", true);
     xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
     xhr.onload = async () => {
       console.log(xhr.responseText);

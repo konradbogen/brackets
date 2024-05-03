@@ -1,7 +1,7 @@
 <?php
-       header("Access-Control-Allow-Origin: *"); // Allow requests from any origin (not recommended for production)
-       header("Access-Control-Allow-Methods: GET, POST, OPTIONS"); // Allow specific HTTP methods
-       header("Access-Control-Allow-Headers: Content-Type, Authorization"); // Allow specific headers
+   header("Access-Control-Allow-Origin: *"); // Allow requests from any origin (not recommended for production)
+   header("Access-Control-Allow-Methods: GET, POST, OPTIONS"); // Allow specific HTTP methods
+   header("Access-Control-Allow-Headers: Content-Type, Authorization"); // Allow specific headers
     
        
     $servername = "s198.goserver.host";  // Hostname des Datenbankservers
@@ -11,9 +11,11 @@
 
     $bracket = $_POST['bracket'];
     $deleteQuery = "DELETE FROM Entries WHERE bracket='" . $bracket . "'";
-    $deleteEdgeQuery =  "DELETE FROM Edges WHERE target='" . $bracket . "' OR source='" . $bracket . "'";
-    
+    $deleteEdgeQuery =  "DELETE FROM Edges WHERE target='" . $bracket . "'";
+    $deleteEdgeTwoQuery =  "DELETE FROM Edges WHERE source='" . $bracket . "'";
+ 
     $db = new mysqli($servername, $username, $password, $dbname);
     $db->query($deleteQuery);
     $db->query($deleteEdgeQuery);
+    $db->query($deleteEdgeTwoQuery);
     $db->close();
