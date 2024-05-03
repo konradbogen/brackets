@@ -8,15 +8,20 @@ async function send(map: Map<String, String>) {
 
     // Using match() with the regex pattern to get all matches
     const matches = _value.match(regexPattern);
+    let prev: string | null = null;
     if (matches != null) {
       matches.forEach((target) => {
-        let edge = {
-          source: key,
-          target: target.replace("[", "").replace("]", ""),
-          value: 1,
-        };
-        edges.push(edge);
-        console.log(edge);
+        let current = target.replace("[", "").replace("]", "");
+        if (prev != null) {
+          let edge = {
+            source: prev,
+            target: current,
+            value: 1,
+          };
+          edges.push(edge);
+          console.log(edge);
+        }
+        prev = current;
       });
     }
   });

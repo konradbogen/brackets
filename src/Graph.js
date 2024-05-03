@@ -21,7 +21,7 @@ function createOrUpdateForceGraph(svg, { nodes, links }) {
     nodeTitle: (d) => `${d.id}\n${d.group}`,
 
     // Node stroke fill (if not using a group color encoding)
-    nodeFill: "var(--color-secondary)",
+    nodeFill: "var(--color-primary)",
 
     // Node stroke color
     nodeStroke: "transparent",
@@ -33,7 +33,7 @@ function createOrUpdateForceGraph(svg, { nodes, links }) {
     nodeStrokeOpacity: 1,
 
     // Node radius, in pixels
-    nodeRadius: 7,
+    nodeRadius: 5,
 
     // Node strength (for force simulation)
     nodeStrength: 200,
@@ -63,10 +63,10 @@ function createOrUpdateForceGraph(svg, { nodes, links }) {
     colors: d3.schemeTableau10,
 
     // Outer width of the SVG container, in pixels
-    width: window.innerWidth,
+    width: window.innerWidth / 2,
 
     // Outer height of the SVG container, in pixels
-    height: window.innerHeight / 2,
+    height: window.innerHeight,
 
     // Promise that resolves to stop the simulation
     invalidation: null,
@@ -96,7 +96,7 @@ function createOrUpdateForceGraph(svg, { nodes, links }) {
     .force("charge", d3.forceManyBody().strength(-200))
     .force(
       "center",
-      d3.forceCenter(window.innerWidth / 2, window.innerHeight / 4)
+      d3.forceCenter(window.innerWidth / 4, window.innerHeight / 2)
     ) // Center force
     .on("tick", ticked)
     .force(
@@ -141,12 +141,13 @@ function createOrUpdateForceGraph(svg, { nodes, links }) {
     .data(updatedNodes)
     .join("text")
     .text((d) => d.id) // Set text content to node id (or any property you want to display)
-    .attr("fill", "var(--color-secondary)") // Set text color to white
+    .attr("fill", "black") // Set text color to white
     .attr("font-size", "10px") // Set font size
     .attr("font-weight", "bold") // Set font weight
     .attr("text-anchor", "middle") // Set text anchor to middle for center alignment
-    .attr("dy", 7) // Adjust vertical position relative to circle (optional)
-    .attr("stroke", "var(--color-secondary)")
+    .attr("dy", 4) // Adjust vertical position relative to circle (optional)
+    .attr("fill", config.nodeFill)
+    .attr("stroke", config.nodeStroke)
     .attr("stroke-opacity", config.nodeStrokeOpacity)
     .attr("stroke-width", config.nodeStrokeWidth)
     .call(drag(simulation));
@@ -206,7 +207,7 @@ function addArrowMarkerDefs(svg) {
     .attr("orient", "auto")
     .append("path")
     .attr("d", "M0,0 L10,5 L0,10 Z") // arrow path
-    .attr("fill", "var(--color-secondary)"); // arrow color
+    .attr("fill", "var(--color-primary)"); // arrow color
 }
 
 // Usage within a React component
@@ -235,7 +236,7 @@ function Graph({ graphData }) {
     <div
       style={{
         width: "100%",
-        height: "50vh",
+        height: "100vh",
         display: "flex",
         justifyContent: "center",
         alignItems: "center",

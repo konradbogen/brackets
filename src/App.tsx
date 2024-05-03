@@ -4,6 +4,7 @@ import LevelList from "./LevelList";
 import TabKeyListener from "./TabKeyListener";
 import Graph from "./Graph";
 import { send, fetchGraph } from "./Edge";
+import lily from "./Lily";
 
 type State = { area: string; mode: boolean; graphData: any };
 type Props = {};
@@ -103,6 +104,10 @@ class App extends React.Component<Props, State> {
     if (newArea.includes(">close ")) {
       newArea = newArea.replace(">close ", "");
       this.levels.delete();
+    } else if (newArea.includes(">lily ")) {
+      newArea = newArea.replace(">lily ", "");
+      let syntax = lily(newArea);
+      this.levels.append(syntax);
     } else if (loadMatch) {
       let fileName = loadMatch[0].split("_")[1].replace(" ", "");
       console.log(fileName);
@@ -153,6 +158,8 @@ class App extends React.Component<Props, State> {
 
   async save(bracket: string, content: string) {
     content = this.removeTrailingSpace(content);
+    content = content.replace(/\\/g, "$");
+    content = content.replace(/'/g, "ø");
     var xhr = new XMLHttpRequest();
     xhr.open("POST", "/app/php/write.php?bracket=fo?content=fi", true);
     xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
@@ -200,7 +207,10 @@ class App extends React.Component<Props, State> {
     console.log(data);
     for (const key in data) {
       let obj = data[key];
-      this.map.set(obj.bracket, obj.content);
+      this.map.set(
+        obj.bracket,
+        obj.content.replace(/ø/g, "'").replace(/\$/g, "\\")
+      );
     }
   }
 
