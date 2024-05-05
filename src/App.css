@@ -1,6 +1,6 @@
 :root {
-  --color-primary: black;
-  --color-secondary: white;
+  --color-primary: #fff;
+  --color-secondary: #383636;
 }
 
 .App {

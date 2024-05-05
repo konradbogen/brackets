@@ -164,8 +164,10 @@ class App extends React.Component<Props, State> {
   async rename(_old: string, _new: string) {
     this.map.forEach((value, key) => {
       if (value.includes("[" + _old + "]")) {
-        let new_value = value.replace("[" + _old + "]", "[" + _new + "]");
+        console.log("INCLUDED IN " + key);
+        let new_value = value.replaceAll("[" + _old + "]", "[" + _new + "]");
         this.map.set(key, new_value);
+        this.save(key, new_value);
       }
     });
 
@@ -204,6 +206,14 @@ class App extends React.Component<Props, State> {
   }
 
   async delete(bracket: string) {
+    this.map.forEach((value, key) => {
+      if (value.includes("[" + bracket + "]")) {
+        console.log("INCLUDED IN " + key);
+        let new_value = value.replaceAll("[" + bracket + "]", "");
+        this.map.set(key, new_value);
+        this.save(key, new_value);
+      }
+    });
     var xhr = new XMLHttpRequest();
     xhr.open("POST", "/app/php/delete.php?bracket=fo", true);
     xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
